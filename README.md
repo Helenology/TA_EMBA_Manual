@@ -42,4 +42,4 @@
 - 扣分点7：报告书整体格式不规范，扣2-5分。
 
 
-![评分小分](https://csdnimg.cn/cdn/content-toolbar/csdn-logo_.png?v=20190924.1 "CSDN图标")
+![评分小分](评分小分.png)
