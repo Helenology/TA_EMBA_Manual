@@ -50,3 +50,45 @@
 
 ![课堂测试](课堂测试展示.png)
 
+> 合并成绩单
+
+``` R
+library(readxl)
+library(writexl)
+
+path = "/Users/helenology/Desktop/研二上/emba成绩计算/"
+
+grade = read_excel(paste0(path, '数据思维：从不确定性中发掘商业价值.xls'),
+                   skip=3)
+
+files_candidate = list.files(path)
+
+for(i in 1:length(files_candidate)){
+  # 如果是标题里含有课后测验
+  if(grepl('课后测试', files_candidate[i])){
+    test_path = paste0(path, files_candidate[i])
+    test = read_excel(test_path)
+    test = test[, c('用户ID', '总分')]
+    names(test) = c('姓名', strsplit(files_candidate[i], '-')[[1]][1])
+    grade = merge(grade, test, by='姓名', all.x=T) # 融合数据
+    print("Adding a test")
+    }
+}
+
+# 保存成绩单
+grade = grade[order(as.numeric(grade$序号), decreasing = F), ]
+grade = grade[!is.na(grade$姓名), ]
+
+# 存储为excel表格
+write_xlsx(
+  grade,
+  path = paste0(path, "tmp.xlsx"),
+  col_names = TRUE,
+  format_headers = TRUE,
+  use_zip64 = FALSE
+)
+```
+
+## 3. 计算最终成绩
+
+在excel里【对测试成绩取平均】得到【测验平均分】，然后加权：【测试平均分】$\times$ 0.7 + 【作业分数】$\times$ 0.3
